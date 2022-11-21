@@ -49,6 +49,10 @@ app.use("/api/chatroom", chatroomHandler);
 io.on("connection", (socket) => {
   console.log("Connected with id:", socket.id);
 
+  socket.on("test", ({ user, msg }) => {
+    console.log(msg, "\n\n", user);
+  });
+
   socket.on("joinRoom", ({ chatroomId }, callback) => {
     socket.join(chatroomId);
   });

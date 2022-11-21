@@ -8,17 +8,27 @@ const User = require("../models/User");
 router.get("/:userId", async (req, res) => {
   let { userId } = req.params;
 
-  User.findOne({ _id: userId })
-    .populate("chatrooms")
-    .exec((err, user) => {
+  Chatroom.find({ participants: userId })
+    .populate("participants")
+    .exec((err, chatrooms) => {
       if (!err) {
-        res.json({ success: true, chatrooms: user.chatrooms });
+        res.json({ success: true, chatrooms, test: "TEST" });
       } else {
-        res.json({ error: err });
+        res.json({ success: false, msg: "Failed to retrieve chats" });
       }
     });
+  // User.findOne({ _id: userId })
+  //   .populate("chatrooms")
+  //   .exec((err, user) => {
+  //     if (!err) {
+  //       res.json({ success: true, chatrooms: user.chatrooms });
+  //     } else {
+  //       res.json({ error: err });
+  //     }
+  //   });
 });
 
+//New Chatroom
 router.post("/", (req, res) => {
   let { participants, chatName } = req.body;
   participants = participants.sort();

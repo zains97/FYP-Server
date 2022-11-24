@@ -20,7 +20,7 @@ const postSchema = mongoose.Schema({
   likers: [mongoose.Types.ObjectId],
   likeCount: Number,
   tags: String,
-  comments: [{ type: mongoose.Types.ObjectId, ref: commentSchema }],
+  comments: [{ type: mongoose.Types.ObjectId, ref: "comment" }],
   createDate: {
     type: Date,
     default: Date.now,

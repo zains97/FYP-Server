@@ -43,9 +43,11 @@ exports.newPost = (req, res) => {
 
 //View single post:
 exports.getOnePost = (req, res) => {
-  Post.findById(req.params.postId, (err, post) => {
-    err ? res.json(err) : res.json({ message: "Post lading", data: post });
-  });
+  Post.findById(req.params.postId)
+    .populate("comments")
+    .exec((err, post) => {
+      err ? res.json(err) : res.json({ message: "Post lading", data: post });
+    });
 };
 
 // Delete post
@@ -87,20 +89,25 @@ exports.update = (req, res) => {
 //Adding a new comment
 exports.newComment = (req, res) => {
   Post.findById(req.params.postId, async (err, post) => {
-    console.log(post);
     if (err) res.send(err);
     try {
       if (!post) res.status(404).send("Post not found").end();
       else {
         let comment = new Comment({ ...req.body });
-        post.comments = await [...post.comments, comment];
-
+        post.comments.push(comment);
+        console.log(post);
         post.save((err, result) => {
           if (err) res.json(err);
           else {
-            res.json({
-              message: "Comment created",
-              data: result,
+            comment.save((err) => {
+              if (err) {
+                res.json({ err, success: false });
+              } else {
+                res.json({
+                  message: "Comment created",
+                  data: result,
+                });
+              }
             });
           }
         });

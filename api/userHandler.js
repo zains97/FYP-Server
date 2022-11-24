@@ -350,3 +350,30 @@ exports.getAllSuspendedUsers = (req, res) => {
     }
   });
 };
+
+exports.storeFcm = (req, res) => {
+  let { userId, fcmToken } = req.body;
+  User.findById({ _id: userId }, (err, user) => {
+    if (!err) {
+      user.fcmToken = fcmToken;
+      user.save((err) => {
+        if (!err) {
+          res.json({
+            success: true,
+            user,
+          });
+        } else {
+          res.json({
+            success: false,
+            err,
+          });
+        }
+      });
+    } else {
+      res.json({
+        success: false,
+        err,
+      });
+    }
+  });
+};

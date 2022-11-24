@@ -22,6 +22,8 @@ router
 
 router.route("/friends/:userId").get(userController.getFriends);
 
+router.put("/store-fcm-token", userController.storeFcm);
+
 router.route("/upload-photo").put(userController.uploadPhoto);
 router.patch("/suspend-user", userController.suspendUser);
 router.patch("/unsuspend-user", userController.unSuspendUser);

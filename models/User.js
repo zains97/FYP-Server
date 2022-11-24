@@ -12,6 +12,7 @@ const userSchema = mongoose.Schema({
   password: { type: String, required: true, min: 6, max: 1024 },
   gender: { type: String, max: 256 },
   currentLocation: locationSchema,
+  fcmToken: { type: String },
   dob: Date,
   profilePic: String,
   isAdmin: { type: Boolean, default: false },

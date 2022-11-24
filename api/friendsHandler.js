@@ -226,3 +226,49 @@ exports.cancelRequest = (req, res) => {
     });
   }
 };
+
+exports.clearFriends = (req, res) => {
+  let { userId } = req.body;
+
+  if (userId) {
+    User.findById(userId).exec((err, user) => {
+      if (!err) {
+        user.friendsId = [];
+        user.save((err) => {
+          if (!err) {
+            res.json({ success: true, user });
+          } else {
+            res.json({ success: false, err });
+          }
+        });
+      } else {
+        res.json({ success: false });
+      }
+    });
+  } else {
+    res.json({ success: false });
+  }
+};
+
+exports.test = (req, res) => {
+  let { userId } = req.body;
+
+  if (userId) {
+    User.findById(userId).exec((err, user) => {
+      if (!err) {
+        user.blockedUsers = [];
+        user.save((err) => {
+          if (!err) {
+            res.json({ success: true, user });
+          } else {
+            res.json({ success: false, err });
+          }
+        });
+      } else {
+        res.json({ success: false });
+      }
+    });
+  } else {
+    res.json({ success: false });
+  }
+};

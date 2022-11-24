@@ -6,5 +6,7 @@ router.get("/get-requests/:recipientId", friendsHandler.getFriendRequests);
 router.put("/confirm-request", friendsHandler.confirmFriendRequest);
 router.put("/decline-request", friendsHandler.declineRequest);
 router.put("/cancel-request", friendsHandler.cancelRequest);
+router.put("/clear-friends", friendsHandler.clearFriends);
+router.put("/test", friendsHandler.test);
 
 module.exports = router;

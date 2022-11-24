@@ -16,6 +16,7 @@ const chatroomHandler = require("./api/chatroomHandler");
 const adminHandler = require("./api/adminHandler");
 const { Message } = require("./models/Message");
 const { saveMessage } = require("./message_utils/MessageHandlers");
+const { sendMessageNotification } = require("./utils/fcm_utils/fcmHandler");
 const PORT = process.env.PORT || 5000;
 
 const server = app.listen(PORT, () => {
@@ -58,7 +59,8 @@ io.on("connection", (socket) => {
   });
 
   socket.on("sendMessage", (data, callback) => {
-    let { messageBody, sender, chatroomId } = data;
+    let { messageBody, sender, chatroomId, fcmToken } = data;
+    console.log("\n\n", fcmToken);
     saveMessage(data)
       .then((res) => {
         if (res.success === true) {
@@ -71,6 +73,7 @@ io.on("connection", (socket) => {
             messageBody,
             chatroomId,
           });
+          sendMessageNotification(sender.firstName, messageBody, fcmToken);
         } else {
           callback(true, { errorMessage: "Failed to send message" });
         }

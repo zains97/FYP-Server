@@ -11,6 +11,7 @@ router.put("/get-friends", userController.getFriends);
 // start: routes for blocking and unblocking a user
 router.put("/block/:id", userController.blockUser);
 router.put("/unblock/:id", userController.unBlockUser);
+router.get("/get-blocked/:userId", userController.getBlockedUsers);
 // end: routes for blocking and unblocking a user
 
 router
@@ -30,4 +31,8 @@ router.patch("/unsuspend-user", userController.unSuspendUser);
 router.get("/get-all-suspended", userController.getAllSuspendedUsers);
 router.patch("/update-location", userController.updateLocation);
 router.get("/count", userController.getUserCount);
+router.patch("/update-interests", userController.updateInterests);
+
+router.get("/my-friends/:userId", userController.myFriends);
+
 module.exports = router;

@@ -272,3 +272,21 @@ exports.test = (req, res) => {
     res.json({ success: false });
   }
 };
+
+exports.unfriend = async (req, res) => {
+  try {
+    let { userId, unfriendedId } = req.body;
+
+    let user = await User.findById(userId);
+    user.friendsId = user.friendsId.filter((frId) => frId != unfriendedId);
+    await user.save();
+
+    let user2 = await User.findById(unfriendedId);
+    user2.friendsId = user2.friendsId.filter((frId) => frId != userId);
+    await user2.save();
+
+    res.json({ success: true, user });
+  } catch (error) {
+    res.json({ success: false, error });
+  }
+};

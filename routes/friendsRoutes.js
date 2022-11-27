@@ -8,5 +8,5 @@ router.put("/decline-request", friendsHandler.declineRequest);
 router.put("/cancel-request", friendsHandler.cancelRequest);
 router.put("/clear-friends", friendsHandler.clearFriends);
 router.put("/test", friendsHandler.test);
-
+router.patch("/unfriend", friendsHandler.unfriend);
 module.exports = router;

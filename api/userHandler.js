@@ -107,6 +107,16 @@ exports.unBlockUser = async (req, res, next) => {
   }
 };
 
+exports.getBlockedUsers = async (req, res) => {
+  let { userId } = req.params;
+  try {
+    let user = await User.findById(userId).populate("blockedUsers");
+    res.json({ success: true, blockedUsers: user.blockedUsers });
+  } catch (error) {
+    res.json({ success: false, error });
+  }
+};
+
 //Get one user from params
 exports.getOneUser = (req, res) => {
   User.findById(req.params.userId, (err, user) => {
@@ -376,4 +386,29 @@ exports.storeFcm = (req, res) => {
       });
     }
   });
+};
+
+exports.updateInterests = async (req, res) => {
+  try {
+    let { interests, userId } = req.body;
+
+    let user = await User.findById(userId);
+    user.interests = interests;
+    await user.save();
+
+    res.json({ success: true, user });
+  } catch (error) {
+    res.json({ success: false, error });
+  }
+};
+
+exports.myFriends = async (req, res) => {
+  try {
+    let { userId } = req.params;
+
+    let user = await User.findById(userId).populate("friendsId");
+    res.json({ success: true, friends: user.friendsId });
+  } catch (error) {
+    res.json({ success: false, error });
+  }
 };

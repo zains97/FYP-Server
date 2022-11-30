@@ -420,10 +420,11 @@ exports.dismissReport = (req, res) => {
   }
 };
 
-exports.getPostByInterests = (req, res) => {
+//Addes async await while evaluating
+exports.getPostByInterests = async (req, res) => {
   let { interests } = req.body;
-
-  interests = groupInterests(interests);
+  console.log("Interests: ", interests);
+  interests = await groupInterests(interests);
 
   try {
     Post.find({ tags: { $in: ["General", ...interests] } })

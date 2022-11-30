@@ -259,7 +259,7 @@ exports.test = (req, res) => {
         user.blockedUsers = [];
         user.save((err) => {
           if (!err) {
-            res.json({ success: true, user });
+            res.json({ success: true, msg: "THIS IS A TEST" });
           } else {
             res.json({ success: false, err });
           }

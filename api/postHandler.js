@@ -421,10 +421,10 @@ exports.dismissReport = (req, res) => {
 };
 
 //Addes async await while evaluating
-exports.getPostByInterests = async (req, res) => {
+exports.getPostByInterests = (req, res) => {
   let { interests } = req.body;
   console.log("Interests: ", interests);
-  interests = await groupInterests(interests);
+  interests = groupInterests(interests);
 
   try {
     Post.find({ tags: { $in: ["General", ...interests] } })

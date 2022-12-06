@@ -14,12 +14,14 @@ const RequesterSchema = new mongoose.Schema({
 
 const FriendRequestSchema = new mongoose.Schema({
   requester: {
-    type: RequesterSchema,
+    type: mongoose.Types.ObjectId,
     required: true,
+    ref: "user",
   },
   recipient: {
     type: mongoose.Types.ObjectId,
     required: true,
+    ref: "user",
   },
   status: {
     type: String,

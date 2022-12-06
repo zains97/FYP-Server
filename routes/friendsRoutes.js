@@ -9,4 +9,5 @@ router.put("/cancel-request", friendsHandler.cancelRequest);
 router.put("/clear-friends", friendsHandler.clearFriends);
 router.put("/test", friendsHandler.test);
 router.patch("/unfriend", friendsHandler.unfriend);
+router.put("/test/reset-user", friendsHandler.resetUserFriendsAndBlocked);
 module.exports = router;

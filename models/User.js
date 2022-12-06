@@ -29,6 +29,7 @@ const userSchema = mongoose.Schema({
   ],
   postID: [mongoose.Types.ObjectId],
   blockedUsers: [{ type: mongoose.Types.ObjectId, ref: "user" }],
+  blockedBy: [{ type: mongoose.Types.ObjectId, ref: "user" }],
   suspendedTill: {
     type: Number,
     default: 0,

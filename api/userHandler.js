@@ -26,85 +26,122 @@ exports.getOneUser = (req, res) => {
 };
 
 exports.blockUser = async (req, res, next) => {
+  const { id } = req.params;
+  const { toBlock } = req.body;
+
   try {
-    const { id } = req.params;
-    const { toBlock } = req.body;
+    let me = await User.findById(id);
+    me.blockedUsers.push(toBlock);
+    me.friendsId = me.friendsId.filter((frId) => frId != toBlock);
+    await me.save();
 
-    const removeFriend = await User.updateOne(
-      { _id: id },
-      {
-        $pull: { friendsId: toBlock },
-      }
-    );
+    let blockedUser = await User.findById(toBlock);
+    blockedUser.blockedBy.push(id);
+    blockedUser.friendsId = blockedUser.friendsId.filter((frId) => frId != id);
+    await blockedUser.save();
 
-    const block = await User.updateOne(
-      { _id: id }, //Filter
-      {
-        $push: { blockedUsers: toBlock },
-      } //Mongoose push
-    );
-
-    //res fail
-    if (!block)
-      return res.json({
-        success: false,
-        message: "User could not be blocked!",
-      });
-
-    //res success
-    res.json({
-      success: true,
-      message: "User blocked!",
-      block,
-    });
+    res.json({ user: me, success: true });
   } catch (error) {
-    console.log(error);
-
-    res.json({
-      success: false,
-      message: "User could not be blocked!",
-    });
-
-    next(error);
+    res.json({ success: false, error });
   }
+
+  // try {
+  //   const { id } = req.params;
+  //   const { toBlock } = req.body;
+
+  //   const removeFriend = await User.updateOne(
+  //     { _id: id },
+  //     {
+  //       $pull: { friendsId: toBlock },
+  //     }
+  //   );
+
+  //   const block = await User.updateOne(
+  //     { _id: id }, //Filter
+  //     {
+  //       $push: { blockedUsers: toBlock },
+  //     } //Mongoose push
+  //   );
+
+  //   //res fail
+  //   if (!block)
+  //     return res.json({
+  //       success: false,
+  //       message: "User could not be blocked!",
+  //     });
+
+  //   //res success
+  //   res.json({
+  //     success: true,
+  //     message: "User blocked!",
+  //     block,
+  //   });
+  // } catch (error) {
+  //   console.log(error);
+
+  //   res.json({
+  //     success: false,
+  //     message: "User could not be blocked!",
+  //   });
+
+  //   next(error);
+  // }
 };
 
 exports.unBlockUser = async (req, res, next) => {
+  const { id } = req.params;
+  const { toUnBlock } = req.body;
+
   try {
-    const { id } = req.params;
-    const { toUnBlock } = req.body;
-    console.log(id);
-    console.log(toUnBlock);
-    const unBlock = await User.updateOne(
-      { _id: id }, //Filter
-      {
-        $pull: {
-          blockedUsers: toUnBlock,
-        },
-      }
-    );
+    let me = await User.findById(id);
+    me.blockedUsers = me.blockedUsers.filter((blId) => blId != toUnBlock);
 
-    if (!unBlock)
-      return res.json({
-        success: false,
-        message: "User could not be un blocked!",
-      });
+    let blockedUser = await User.findById(toUnBlock);
+    blockedUser.blockedBy = blockedUser.blockedBy.filter((blId) => blId != id);
 
-    res.json({
-      success: true,
-      message: "User unblocked!",
-      unBlock,
-    });
+    await blockedUser.save();
+    await me.save();
+
+    res.json({ user: me, success: true });
   } catch (error) {
-    console.log(error);
-
-    res.json({
-      success: false,
-      message: "User could not be un blocked!",
-    });
-
-    next(error);
+    res.json({ success: false, error });
   }
+
+  // try {
+  //   const { id } = req.params;
+  //   const { toUnBlock } = req.body;
+  //   console.log(id);
+  //   console.log(toUnBlock);
+  //   const unBlock = await User.updateOne(
+  //     { _id: id }, //Filter
+  //     {
+  //       $pull: {
+  //         blockedUsers: toUnBlock,
+  //       },
+  //     }
+  //   );
+
+  //   if (!unBlock)
+  //     return res.json({
+  //       success: false,
+  //       message: "User could not be un blocked!",
+  //     });
+
+  //   res.json({
+  //     success: true,
+  //     message: "User unblocked!",
+  //     unBlock,
+  //   });
+  // } catch (error) {
+  //   console.log(error);
+
+  //   res.json({
+  //     success: false,
+  //     message: "User could not be un blocked!",
+  //   });
+
+  //   next(error);
+  // }
 };
 
 exports.getBlockedUsers = async (req, res) => {
@@ -239,28 +276,13 @@ exports.uploadPhoto = (req, res) => {
   }
 };
 
-exports.updateLocation = (req, res) => {
+exports.updateLocation = async (req, res) => {
   let { userId, location } = req.body;
-
   try {
-    User.updateOne(
-      { _id: userId },
-      { currentLocation: location },
-      (err, user) => {
-        if (!err) {
-          console.log("Done");
-          res.json({
-            success: true,
-            updatedUser: user,
-          });
-        } else {
-          res.json({
-            success: false,
-            error: err,
-          });
-        }
-      }
-    );
+    let user = await User.findById(userId);
+    user.currentLocation = location;
+    console.log("USER: ", user);
+    await user.save();
   } catch (error) {
     res.json({
       success: false,

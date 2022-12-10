@@ -228,7 +228,10 @@ exports.declineRequest = (req, res) => {
 };
 
 exports.cancelRequest = async (req, res) => {
-  let { senderId, recipientId, friendRequestId } = req.body;
+  // let { senderId, recipientId, friendRequestId } = req.body;
+  let { senderId, recipientId } = req.body;
+  console.log("SENDER: ", senderId, "RECIPIENT: ", recipientId);
+
   try {
     await FriendRequest.findOneAndDelete({
       requester: senderId,
@@ -254,6 +257,7 @@ exports.cancelRequest = async (req, res) => {
   } catch (error) {
     res.json({ success: true, error });
   }
+
   // let updatedSender;
   // try {
   //   User.updateOne(

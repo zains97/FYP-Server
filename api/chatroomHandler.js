@@ -141,4 +141,24 @@ router.get("/get-chatroom/:chatroomId", (req, res) => {
     });
 });
 
+//Delete chatroom
+router.delete("/:chatroomId", async (req, res) => {
+  let { chatroomId } = req.params;
+
+  try {
+    let chatroom = await Chatroom.findById(chatroomId);
+
+    chatroom.participants.forEach(async (participantId) => {
+      let user = await User.findById(participantId);
+      user.chatrooms = user.chatrooms.filter((chatId) => chatId != chatroomId);
+      await user.save();
+    });
+
+    await Chatroom.findByIdAndDelete(chatroomId);
+    res.json({ success: true, msg: "Chatroom deleted" });
+  } catch (error) {
+    res.json({ success: false, error });
+  }
+});
+
 module.exports = router;

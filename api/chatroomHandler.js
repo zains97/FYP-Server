@@ -80,14 +80,18 @@ router.post("/", (req, res) => {
   });
 });
 
-//FOR TESTING
+//FOR DELETE
 router.put("/", (req, res) => {
-  let { participants, _id: chatroomId } = req.body;
+  "DELETE IS RUNNIGN";
+  let { participants, chatroomId } = req.body;
+  console.log("PARTICIPANTS: ", participants);
+  console.log("\n\n_ID: ", _id);
+  console.log("\n\nCHATROOM ID: ", chatroomId);
   let success = true;
   participants.forEach((participantId) => {
     User.findOne({ _id: participantId }).then(async (user) => {
       user.chatrooms = user.chatrooms.filter(
-        (chatroom) => chatroom == chatroomId
+        (chatroom) => chatroom != chatroomId
       );
       await user.save((err) => {
         if (err) {
@@ -96,7 +100,7 @@ router.put("/", (req, res) => {
       });
     });
   });
-  Chatroom.deleteOne({ _id: chatroomId })
+  Chatroom.findByIdAndDelete(chatroomId)
     .then(() => {
       if (success == true) {
         res.json({ success: true });
